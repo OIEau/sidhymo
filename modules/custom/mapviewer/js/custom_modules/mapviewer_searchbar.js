@@ -13,7 +13,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
         localmap = map_instance;
         localresultable = resultable_instance;
         jQuery('#'+searchbardiv).select2({
-            placeholder: "Selectionnez une emprise géographique",    
+            placeholder: "Sélectionnez une commune, une département, un cours d'eau...",    
             language: "fr",
             allowClear: true,
             ajax: {
