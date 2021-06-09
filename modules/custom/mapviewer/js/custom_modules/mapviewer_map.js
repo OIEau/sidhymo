@@ -382,6 +382,10 @@ var map = function(mapDiv, fichehandler_instance){
             })
         });
         selectedFeature = new ol.Feature();
+
+        // Evenement sur la map : on modifie le curseur
+        eventCursorOnMap()
+        // map.on('moveend', eventCursorOnMap());
     }
 
 
@@ -666,6 +670,27 @@ var map = function(mapDiv, fichehandler_instance){
         //     zoom: zoom,
         //     duration: duration / 2
         // }, callback);
+    }
+
+    var eventCursorOnMap = function() {
+        jQuery(".map").on('mousedown', function() {
+          jQuery("canvas").css('cursor' , 'grabbing');
+        })
+        jQuery(".map").on('mouseup', function() {
+          jQuery("canvas").css('cursor' , '');
+        })
+
+        jQuery(".map").on('wheel', function(event){
+          if(event.originalEvent.deltaY < 0){
+            //up
+            jQuery("canvas").css('cursor' , 'zoom-in');
+          }
+          else {
+            //down
+            jQuery("canvas").css('cursor' , 'zoom-out');
+          }
+          setTimeout(() => {  jQuery("canvas").css('cursor' , ''); }, 500);
+        });
     }
 
     /*

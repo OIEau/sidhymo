@@ -37,6 +37,10 @@
     width: 99%;
 }
 
+canvas{
+  cursor: grab;
+}
+
 .ol-zoom {
     top: .5em;
     left: 25px !important;
@@ -355,7 +359,7 @@
   padding-bottom: 25px!important;
 } */
 
-body::-webkit-scrollbar{ 
+body::-webkit-scrollbar{
   display: none;
 }
 
