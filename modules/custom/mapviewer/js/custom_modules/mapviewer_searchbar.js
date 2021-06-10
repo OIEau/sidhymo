@@ -21,7 +21,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                 dataType: 'json',
                 data: function (params) {
                   var query = {
-                    search: params.term.replace("-"," "),
+                    search: params.term ? params.term.replace("-"," ") : params.term,
                     territoire: localmap.territoire
                   }
 
