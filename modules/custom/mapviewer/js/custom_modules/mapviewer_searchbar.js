@@ -13,7 +13,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
         localmap = map_instance;
         localresultable = resultable_instance;
         jQuery('#'+searchbardiv).select2({
-            placeholder: "Sélectionnez une commune, une département, un cours d'eau...",    
+            placeholder: "Sélectionnez une commune, une département, un cours d'eau...",
             language: "fr",
             allowClear: true,
             ajax: {
@@ -21,7 +21,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                 dataType: 'json',
                 data: function (params) {
                   var query = {
-                    search: params.term,
+                    search: params.term.replace("-"," "),
                     territoire: localmap.territoire
                   }
 
@@ -93,10 +93,10 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                 projection: 'EPSG:4326',
                 style: localmap.styles.yellowStyle
             });
-            
+
             // Zoomer
             map.getView().fit(vectorSourceEmprise.getExtent(), { duration: 1000 } );
-            
+
             // Ajouter au groupe interactif la nouvelle layer
             map.getLayerGroup().getLayers().item(3).getLayers().removeAt(0);
             map.getLayerGroup().getLayers().item(3).getLayers().insertAt(0, vectorEmprise)
@@ -116,7 +116,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
             map.getLayerGroup().getLayers().item(3).getLayers().push(new ol.layer.Vector())
         });
 
-       
+
         /* Pour chaque objet du tableau de configuration array_objets_etude */
         var countLoading = 0;
         config.array_objets_etude.forEach(function(typeObjetEtude, index){
@@ -130,7 +130,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
             //                                   typeObjetEtude.name+'.png');
             jQuery('#info_chargement').modal();
             jQuery('#info_chargement_body').append('<span><img src="modules/custom/mapviewer/images/' + typeObjetEtude.name+ '.png" width="20" style="margin-right: 7px;"/> ' + typeObjetEtude.libelle + '<span id="encours_' + typeObjetEtude.name + '"> en cours de chargement...</span></span>');
-            
+
             countLoading++; // Compteur de couches chargées
             jQuery.getJSON(objetdetude_url, function(data) {
 

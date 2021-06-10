@@ -30,7 +30,7 @@ Sur la base d’un recueil rédigé par l’Agence Française pour la Biodiversi
 ## Installation
 1. Cloner le répertoire
    ```sh
-   git clone https://github.com/lcrespin/sidhymo.git
+   git clone https://github.com/OIEau/sidhymo.git
    ```
 2. Installer la base de données
 
