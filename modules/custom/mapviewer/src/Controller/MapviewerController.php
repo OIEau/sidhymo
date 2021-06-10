@@ -1704,7 +1704,7 @@ class MapviewerController extends ControllerBase
         $territoire = $request->query->get('territoire');
         // Check cache
         $cid = "searchemprise_" . $term . "_" . $territoire;
-        if ($cache = \Drupal::cache()->get($cid) && false) {
+        if ($cache = \Drupal::cache()->get($cid)) {
             $data = $cache->data;
         } else {
             // Affiche les 5 premiers si pas de recherche encore
