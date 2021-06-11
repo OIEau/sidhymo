@@ -15,18 +15,20 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
         jQuery('#'+searchbardiv).select2({
             placeholder: "Sélectionnez une commune, une département, un cours d'eau...",    
             language: "fr",
-            allowClear: true,
             ajax: {
                 url: config.url_searchemprise,
                 dataType: 'json',
                 data: function (params) {
-                  var query = {
-                    search: params.term,
-                    territoire: localmap.territoire
-                  }
-
-                  // Query parameters will be ?search=[term]&type=public
-                  return query;
+                    searchterm = ""
+                    if(params.term != undefined) {
+                        searchterm = params.term
+                    }
+                    var query = {
+                        search: searchterm,
+                        territoire: localmap.territoire
+                    }
+                    // Query parameters will be ?search=[term]&type=public
+                    return query;
                 },
                 // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
             }
@@ -38,7 +40,6 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
         }).maximizeSelect2Height();
 
         jQuery('.select2').on('click', function () {
-          jQuery('#notifications').html('');
           jQuery('.layer-switcher').removeClass('shown');
           jQuery('.layer-switcher').children().html("");
         })
@@ -48,16 +49,16 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
      * initialise les couches interactive, affiche l'emprise et les objets d'étude
      */
     this.getEmpriseEtObjetDetude = function(type, obj, layername) {
+        // On affiche la popup modal de chargement
+        jQuery('#info_chargement').modal();
+        jQuery('#info_chargement_body').html('<p style="text-align: center;">Votre carte hydromorphologique de <b>"'+ layername +'"</b> est en cours de construction.<br><progress></progress></p>');
         jQuery('#bot_panel').hide()
         localresultable.initResultTable();
         initEmpriseEtObjetDetude();
         addEmprise(type, obj, layername)
         addObjetEtude(type, obj)
-        _this.removeForeground()
     };
 
-    this.removeForeground = function() {
-    };
     /*
      * initialise les couches interactives
      */
@@ -72,19 +73,25 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
      */
     var addEmprise = function(type, obj, layername) {
         // On affiche la popup modal de chargement
-        jQuery('#info_chargement_body').html('<p style="text-align: center;">Votre carte hydromorphologique de <b>"'+ layername +'"</b> est en cours de construction.<br><progress></progress></p>');
+        jQuery('#info_chargement_body').append('<span>' + layername + '<span id="encours_emprise"> en cours de chargement...</span></span>');
 
         /* Init */
         map.getLayerGroup().getLayers().item(3).getLayers().push(new ol.layer.Vector())
+        vectorSourceEmprise = new ol.source.Vector();
+
         /* Geojson de l'emprise */
         emprise_wfsurl = config.url_wfsemprise+"?SERVICE=WFS&REQUEST=getFeature&VERSION=2.0.0&srsName=epsg%3A4326&TYPENAME=sidhymo%3A"+type+"&outputFormat=application%2Fjson&FILTER=%3CFilter%20xmlns%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Egid%3C%2FPropertyName%3E%3CLiteral%3E"+obj+"%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E";
+        
+        // On a besoin d'avoir l'emprise chargée pour la suite: on passe en synchrone
+        jQuery.ajaxSetup({
+            async: false
+        });
         jQuery.getJSON(emprise_wfsurl, function(data) {
             features = new ol.format.GeoJSON().readFeatures(data, {
                 featureProjection: 'EPSG:3857'
             });
 
             /* Layer de l'emprise selectionnée */
-            vectorSourceEmprise = new ol.source.Vector();
             vectorSourceEmprise.addFeatures(features);
             var vectorEmprise = new ol.layer.Vector({
                 title: layername,
@@ -95,14 +102,19 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
             });
             
             // Zoomer
-            map.getView().fit(vectorSourceEmprise.getExtent(), { duration: 1000 } );
+            map.getView().fit(vectorSourceEmprise.getExtent(), { duration: 500 } );
             
             // Ajouter au groupe interactif la nouvelle layer
             map.getLayerGroup().getLayers().item(3).getLayers().removeAt(0);
             map.getLayerGroup().getLayers().item(3).getLayers().insertAt(0, vectorEmprise)
 
         });
-
+        // Plus besoin du mode  synchrone
+        jQuery.ajaxSetup({
+            async: true
+        });
+        // On indique que l'emprise est chargé
+        jQuery('#encours_emprise').html(' <b>chargé</b>.')
     }
 
 
@@ -119,114 +131,137 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
        
         /* Pour chaque objet du tableau de configuration array_objets_etude */
         var countLoading = 0;
-        config.array_objets_etude.forEach(function(typeObjetEtude, index){
-            /* Récupérer et affiche le geojson des objets */
-            objetdetude_url = config.url_searchobjet+"?emprise="+typeEmprise+"&gid="+cdEmprise+"&type="+typeObjetEtude.name;
+        // FOREACH
+        config.array_objets_etude.forEach(function(typeObjetEtude, index) {
+            console.log(countLoading);
+            countLoading++; // Compteur de couches chargées
 
-            /* Ajouter une notification de chargement */
-            // var notif = _this.addNotification('<b>Chargement des ' + typeObjetEtude.libelle + ' en cours...</b>',
-            //                                   typeObjetEtude.name,
-            //                                   typeObjetEtude.libelle,
-            //                                   typeObjetEtude.name+'.png');
-            jQuery('#info_chargement').modal();
+            /* Ouvrir la popup modal de chargement */
             jQuery('#info_chargement_body').append('<span><img src="modules/custom/mapviewer/images/' + typeObjetEtude.name+ '.png" width="20" style="margin-right: 7px;"/> ' + typeObjetEtude.libelle + '<span id="encours_' + typeObjetEtude.name + '"> en cours de chargement...</span></span>');
             
-            countLoading++; // Compteur de couches chargées
-            jQuery.getJSON(objetdetude_url, function(data) {
+            if(typeObjetEtude.type == "wfs") { // || typeEmprise != 'hydroecoregion1' || typeEmprise != 'hydroecoregion2' || typeEmprise != 'regionhydro' ) {
+                /* Récupérer et affiche le geojson des objets */
+                objetdetude_url = config.url_searchobjet+"?emprise="+typeEmprise+"&gid="+cdEmprise+"&type="+typeObjetEtude.name;
 
-                if(data && data.features) {
-                    // S'il y a plus de 100 objets, on ne les affiche pas par défaut
-                    // Pour ne pas faire ramer la carte
-                    visibility = true
-                    // if(data.features.length > 1000) {
-                    //     // Le préciser dans une nouvelle notif
-                    //     _this.addNotification('<b>Il y a plus de 1000 ' + typeObjetEtude.libelle + ' dans cette emprise, pour ne pas ralentir l\'outil cartographique la couche a donc été masquée par défaut.\
-                    //                             Utilisez l\'outil de gestion de couche <img src="modules/custom/mapviewer/images/layerswit.png" width="20" style="margin: 2px;"/>\
-                    //                             pour l\'afficher.</b>',
-                    //                             typeObjetEtude.name+'_warn',
-                    //                             typeObjetEtude.libelle,
-                    //                             typeObjetEtude.name+'.png',
-                    //                             false,
-                    //                             true);
-                    //     visibility = false
-                    // }
+                /* Récupérer et affiche le geojson des objets */
+                jQuery.getJSON(objetdetude_url, function(data) {
 
-                    // // Supprimer la notif de chargement
-                    // notif.hide(3000, function() {
-                    //     notif.remove();
-                    // });
+                    if(data && data.features) {
+                        // S'il y a plus de 100 objets, on ne les affiche pas par défaut
+                        // Pour ne pas faire ramer la carte
+                        visibility = true
+                        // if(data.features.length > 1000) {
+                        //     visibility = false
+                        // }
 
+                        /* Afficher sur la carte */
+                        features = new ol.format.GeoJSON().readFeatures(data, {
+                            featureProjection: 'EPSG:3857'
+                        });
 
-                    // Afficher sur la carte
-                    features = new ol.format.GeoJSON().readFeatures(data, {
-                        featureProjection: 'EPSG:3857'
-                    });
+                        /* Layer des objet d'étude en intersection avec l'emprise d'étude */
+                        vectorSourceObjet = new ol.source.Vector();
+                        vectorSourceObjet.addFeatures(features);
+                        var vectorObjet = new ol.layer.Vector({
+                            title: typeObjetEtude.libelle,
+                            visible: visibility,
+                            type: 'objetdetude',
+                            name: typeObjetEtude.name,
+                            className:typeObjetEtude.name,
+                            source: vectorSourceObjet,
+                            projection: 'EPSG:4326',
+                            style: typeObjetEtude.style ? typeObjetEtude.style : localmap.styles.blueStyle
+                        });
 
-                    /* Layer de l'emprise selectionnée */
-                    vectorSourceObjet = new ol.source.Vector();
-                    vectorSourceObjet.addFeatures(features);
-                    var vectorObjet = new ol.layer.Vector({
-                        title: typeObjetEtude.libelle,
-                        visible: visibility,
-                        type: 'objetdetude',
-                        name: typeObjetEtude.name,
-                        source: vectorSourceObjet,
-                        projection: 'EPSG:4326',
-                        style: typeObjetEtude.style ? typeObjetEtude.style : localmap.styles.blueStyle
-                    });
+                        // Ajouter au groupe interactif la nouvelle layer
+                        map.getLayerGroup().getLayers().item(3).getLayers().removeAt(index+1);
+                        map.getLayerGroup().getLayers().item(3).getLayers().insertAt(index+1, vectorObjet)
 
-                    // Ajouter au groupe interactif la nouvelle layer
-                    map.getLayerGroup().getLayers().item(3).getLayers().removeAt(index+1);
-                    map.getLayerGroup().getLayers().item(3).getLayers().insertAt(index+1, vectorObjet)
+                        // Ajouter au tableau HTML
+                        localresultable.appendToResultTable(typeObjetEtude, data)
 
-                    // Ajouter au tableau HTML
-                    localresultable.appendToResultTable(typeObjetEtude, data)
+                        //Popup info sur un element
+                        map.on('pointermove', _this.showInfo);
 
-                    //Popup info sur un element
-                    map.on('pointermove', _this.showInfo);
+                        /* Mettre à jour la popup modal quand les couches sont chargées*/
+                        countLoading--; // Compteur de couches chargées
+                        jQuery('#encours_'+typeObjetEtude.name).html(' <b>chargé</b>.')
+                        if (countLoading == 0) {
+                            jQuery('#info_chargement').modal('hide')
+                        }
+                    }
+                    else {
+                        /* Mettre à jour la popup modal quand les couches sont chargées*/
+                        countLoading--; // Compteur de couches chargées
+                        jQuery('#encours_'+typeObjetEtude.name).html(' <b>chargé</b>.')
+                        if (countLoading == 0) {
+                            jQuery('#info_chargement').modal('hide')
+                        }
+                    }
+                });
+            }
+            else if(typeObjetEtude.type == "wms") {
+                var wms_source = new ol.source.TileWMS({
+                    // url: 'https://maps.oieau.fr/ows/OIEau/ami_hydromorpho',
+                    url :'https://sidhymo.recette.oieau.fr/ows/',
+                    params: {
+                        'LAYERS': typeObjetEtude.name,
+                        'TILED': true,
+                        // 'CQL_FILTER': 'INTERSECTS(geom,)'
+                    },
+                    crossOrigin: 'anonymous'
+                });
 
-                }
-                else {
-                    // notif.hide(1000, function() {
-                    //     notif.remove();
-                    // });
-                    // console.log("Pas de "+type+ " trouvé")
-                }
+                var wms_tile = new ol.layer.Tile({
+                    title: typeObjetEtude.libelle,
+                    type: 'objetdetude',
+                    name: typeObjetEtude.name,
+                    className:typeObjetEtude.name,
+                    visible: true,
+                    source: wms_source,
+                    extent: vectorSourceEmprise.getExtent() 
+                });
 
-                jQuery('#encours_'+typeObjetEtude.name).html(' <b>chargé</b>.')
-                countLoading--; // Compteur de couches chargées
-                if (countLoading == 0) {
-                    jQuery('#info_chargement').modal('hide')
-                }
-            });
+                // Ajouter au groupe interactif la nouvelle layer
+                map.getLayerGroup().getLayers().item(3).getLayers().removeAt(index+1);
+                map.getLayerGroup().getLayers().item(3).getLayers().insertAt(index+1, wms_tile);
 
+                /* Mettre à jour la popup modal quand les couches sont chargées*/
+                wms_source.on('tileloadend', function () {
+                    countLoading--; // Compteur de couches chargées
+                    jQuery('#encours_'+typeObjetEtude.name).html(' <b>chargé</b>.')
+                    if (countLoading == 0) {
+                        jQuery('#info_chargement').modal('hide')
+                    }
+                });
+            }
         });
     }
 
-    this.addNotification = function(message, type, lbtype, legende_png, showloader=true, autohide=false) {
+    // this.addNotification = function(message, type, lbtype, legende_png, showloader=true, autohide=false) {
 
-        var html_notif = '\
-        <div id="notif' + type + '" class="toast" style="z-index:1000;  margin: 2px;">\
-            <div class="toast-header">\
-                <img src="modules/custom/mapviewer/images/' + legende_png + '" width="20" style="margin-right: 7px;">\
-                <strong class="mr-auto" id="notif'+type+'text">' + message + '</strong>';
+    //     var html_notif = '\
+    //     <div id="notif' + type + '" class="toast" style="z-index:1000;  margin: 2px;">\
+    //         <div class="toast-header">\
+    //             <img src="modules/custom/mapviewer/images/' + legende_png + '" width="20" style="margin-right: 7px;">\
+    //             <strong class="mr-auto" id="notif'+type+'text">' + message + '</strong>';
 
-        if(showloader) {
-            html_notif += '<img src="https://miro.medium.com/max/1120/1*hShXr9hDtKxHbHe3jQ_DQw.gif" style="width: 90px;">';
-        }
+    //     if(showloader) {
+    //         html_notif += '<img src="https://miro.medium.com/max/1120/1*hShXr9hDtKxHbHe3jQ_DQw.gif" style="width: 90px;">';
+    //     }
 
-        html_notif += '\
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">\
-                    <span aria-hidden="true">×</span>\
-                </button>\
-            </div>\
-        </div>'
+    //     html_notif += '\
+    //             <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">\
+    //                 <span aria-hidden="true">×</span>\
+    //             </button>\
+    //         </div>\
+    //     </div>'
 
-        jQuery('#notifications').append(html_notif)
-        jQuery("#notif"+type).toast({autohide:autohide, delay: 100000})
-        jQuery("#notif"+type).toast('show')
-        return jQuery("#notif"+type);
-    }
+    //     jQuery('#notifications').append(html_notif)
+    //     jQuery("#notif"+type).toast({autohide:autohide, delay: 100000})
+    //     jQuery("#notif"+type).toast('show')
+    //     return jQuery("#notif"+type);
+    // }
 
     ////////
     // Affiche une bulle sur une properties de la map

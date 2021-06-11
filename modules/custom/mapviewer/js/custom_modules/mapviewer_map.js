@@ -125,7 +125,7 @@ var map = function(mapDiv, fichehandler_instance){
                 /* Les traits, en bleu un peu épais */
                 stroke: new ol.style.Stroke({
                     lineCap: 'round',
-                    color: 'rgba(220, 90, 90, 1',
+                    color: 'rgba(220, 90, 90, 1)',
                     width: 5
                 }),
                 /* Couleur de remplissage */
@@ -234,9 +234,12 @@ var map = function(mapDiv, fichehandler_instance){
             type: 'hydromorpho',
             visible: false,
             source: new ol.source.TileWMS({
-                url: 'https://maps.oieau.fr/ows/OIEau/ami_hydromorpho',
+                // url: 'https://maps.oieau.fr/ows/OIEau/ami_hydromorpho',
+                url :'https://sidhymo.recette.oieau.fr/ows/',
                 params: {
-                    'LAYERS': 'Troncons_SYRAH'
+                    // 'LAYERS': 'Troncons_SYRAH'
+                    'LAYERS': 'tgh',
+                    'TILED': true,
                 },
                 crossOrigin: 'anonymous'
             })
@@ -246,9 +249,12 @@ var map = function(mapDiv, fichehandler_instance){
             type: 'hydromorpho',
             visible: false,
             source: new ol.source.TileWMS({
-                url: 'https://maps.oieau.fr/ows/OIEau/ami_hydromorpho',
+                // url: 'https://maps.oieau.fr/ows/OIEau/ami_hydromorpho',
+                url :'https://sidhymo.recette.oieau.fr/ows/',
                 params: {
-                    'LAYERS': 'USRA_SYRAH'
+                    // 'LAYERS': 'USRA_SYRAH'
+                    'LAYERS': 'usra',
+                    'TILED': true,
                 },
                 crossOrigin: 'anonymous'
             })
@@ -262,7 +268,7 @@ var map = function(mapDiv, fichehandler_instance){
             source: new ol.source.TileWMS({
                 url: 'https://maps.oieau.fr/ows/OIEau/ami_hydromorpho',
                 params: {
-                    'LAYERS': 'ObstEcoul'
+                    'LAYERS': 'ObstEcoul',
                 },
                 crossOrigin: 'anonymous'
             })
@@ -354,7 +360,7 @@ var map = function(mapDiv, fichehandler_instance){
                 }),
                 new ol.layer.Group({
                     title: 'Couches hydromorphologiques',
-                    layers: [/*ind_base_bio_SYRAH, ind_physique_SYRAH, ind_physique_ME, ind_base_bio_ME,*/ Troncons_SYRAH, USRA_SYRAH, ied_carhyce, roe]
+                    layers: [/*ind_base_bio_SYRAH, ind_physique_SYRAH, ind_physique_ME, ind_base_bio_ME,*/ USRA_SYRAH, Troncons_SYRAH, ied_carhyce, roe]
                 }),
                 new ol.layer.Group({
                     title: 'Couches interactives',
@@ -551,6 +557,15 @@ var map = function(mapDiv, fichehandler_instance){
                 var feature = ""
                 var layer = ""
 
+                var pixel = map.getEventPixel(evt.originalEvent);
+                var hitwms = map.forEachLayerAtPixel(pixel, function (layer, color) {
+                    return layer.values_.type == 'objetdetude'
+                }, {hitTolerance:5});
+                
+                // map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+                
+
+                // S'il y a déja quelque chose de stylé alors on l'annule
                 if(selectedFeature != null) {
                     selectedFeature.setStyle(selectedFeatureOldStyle)
                     selectedFeature = null;
@@ -563,7 +578,9 @@ var map = function(mapDiv, fichehandler_instance){
                 }, {
                     hitTolerance: 5
                 });
+
                 if(featureArray) {
+                    // console.log(featureArray)
                     feature = featureArray[0]
                     layer = featureArray[1]
                 }
@@ -571,7 +588,7 @@ var map = function(mapDiv, fichehandler_instance){
                 // S'il y a une feature a cet endroit on highlight
                 if (feature && layer.values_.type == 'objetdetude') {
                     map.getTargetElement().style.cursor  = 'pointer';
-                    // Enregistrer le style et la feature pour anuler plus tard
+                    // Enregistrer le style et la feature pour annuler plus tard
                     selectedFeature = feature;
                     selectedFeatureOldStyle = feature.getStyle();
                     name = layer.get('name');
@@ -583,6 +600,9 @@ var map = function(mapDiv, fichehandler_instance){
                         feature.setStyle(root.styles.redStyle);
                     }
                     feature.changed();
+                }
+                else if(hitwms) {
+                    map.getTargetElement().style.cursor  = 'pointer';
                 }
                 else {
                     map.getTargetElement().style.cursor  =  ''

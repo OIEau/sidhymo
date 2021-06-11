@@ -1699,9 +1699,13 @@ class MapviewerController extends ControllerBase
      */
     public function searchEmprise(Request $request)
     {
+        // Starting clock time in seconds
+        $start_time = microtime(true);
+
         $limit      = 5;
         $term       = $request->query->get('search');
         $territoire = $request->query->get('territoire');
+        $query = "";
         // Check cache
         $cid = "searchemprise_" . $term . "_" . $territoire;
         if ($cache = \Drupal::cache()->get($cid)) {
@@ -1763,9 +1767,13 @@ class MapviewerController extends ControllerBase
         $response = new JsonResponse();
         $response->setData(["results" => $data]);
 
-        // $fin = microtime(true);
-        // $tempsEcoule = $fin - $debut;
-        // echo $tempsEcoule;
+        // End clock time in seconds
+        $end_time = microtime(true);
+        
+        // Calculate script execution time
+        $execution_time = ($end_time - $start_time);
+        
+        // echo " Execution time of script = ".$execution_time." sec";
 
         return $response;
     }

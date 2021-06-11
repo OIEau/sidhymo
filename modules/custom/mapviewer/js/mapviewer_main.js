@@ -7,6 +7,8 @@ var config = {
     url_gettableterritoires : 'gettableterritoires',
     array_objets_etude  : [
                             {
+                                // type : 'wms',
+                                type : 'wfs',
                                 name : 'usra',
                                 libelle : 'Unité Spatiale de Recueil et d\'Analyse (USRA)',
                                 code : 'id_usra_dd',
@@ -27,6 +29,8 @@ var config = {
                                 ]
                             },
                             {
+                                // type : 'wms',
+                                type : 'wfs',
                                 name : 'tgh',
                                 libelle : 'Tronçon Geomorphologiquement Homogène (TGH)',
                                 code: 'id_troncon',
@@ -47,6 +51,7 @@ var config = {
                                 ]
                             },
                             {
+                                type : 'wfs',
                                 name: 'roe',
                                 libelle: 'Obstacle à l\'écoulement',
                                 code : 'identifiant_roe',
@@ -77,6 +82,7 @@ var config = {
                                 ]
                             },
                             {
+                                type : 'wfs',
                                 name: 'roeice',
                                 libelle: 'Obstacle à l\'écoulement ICE',
                                 code : 'identifiant_roe',
@@ -105,6 +111,7 @@ var config = {
                                 ]
                             },
                             {
+                                type : 'wfs',
                                 name: 'stcarhyce',
                                 libelle: 'Station de mesure Carhyce',
                                 code : 'code_station',
