@@ -13,22 +13,19 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
         localmap = map_instance;
         localresultable = resultable_instance;
         jQuery('#'+searchbardiv).select2({
-            placeholder: "Sélectionnez une commune, une département, un cours d'eau...",    
+            placeholder: "Sélectionnez une commune, une département, un cours d'eau...",
             language: "fr",
             ajax: {
                 url: config.url_searchemprise,
                 dataType: 'json',
                 data: function (params) {
-                    searchterm = ""
-                    if(params.term != undefined) {
-                        searchterm = params.term
-                    }
-                    var query = {
-                        search: searchterm,
-                        territoire: localmap.territoire
-                    }
-                    // Query parameters will be ?search=[term]&type=public
-                    return query;
+                  var query = {
+                    search: params.term ? params.term.replace("-"," ") : params.term,
+                    territoire: localmap.territoire
+                  }
+
+                  // Query parameters will be ?search=[term]&type=public
+                  return query;
                 },
                 // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
             }
@@ -100,7 +97,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                 projection: 'EPSG:4326',
                 style: localmap.styles.yellowStyle
             });
-            
+
             // Zoomer
             map.getView().fit(vectorSourceEmprise.getExtent(), { duration: 500 } );
             
@@ -128,7 +125,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
             map.getLayerGroup().getLayers().item(3).getLayers().push(new ol.layer.Vector())
         });
 
-       
+
         /* Pour chaque objet du tableau de configuration array_objets_etude */
         var countLoading = 0;
         // FOREACH

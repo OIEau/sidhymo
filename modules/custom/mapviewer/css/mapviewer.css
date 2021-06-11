@@ -35,7 +35,9 @@
     position: absolute;
     height: 86vh;
     width: 99%;
+    cursor: grab;
 }
+
 
 .ol-zoom {
     top: .5em;
@@ -355,7 +357,7 @@
   padding-bottom: 25px!important;
 } */
 
-body::-webkit-scrollbar{ 
+body::-webkit-scrollbar{
   display: none;
 }
 
