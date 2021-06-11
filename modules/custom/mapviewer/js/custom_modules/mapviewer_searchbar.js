@@ -13,7 +13,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
         localmap = map_instance;
         localresultable = resultable_instance;
         jQuery('#'+searchbardiv).select2({
-            placeholder: "Sélectionnez une commune, une département, un cours d'eau...",
+            placeholder: "Recherchez une commune, une département, un cours d'eau...",
             language: "fr",
             ajax: {
                 url: config.url_searchemprise,
@@ -70,7 +70,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
      */
     var addEmprise = function(type, obj, layername) {
         // On affiche la popup modal de chargement
-        jQuery('#info_chargement_body').append('<span>' + layername + '<span id="encours_emprise"> en cours de chargement...</span></span>');
+        // jQuery('#info_chargement_body').append('<span>' + layername + '<span id="encours_emprise"> en cours de chargement...</span></span>');
 
         /* Init */
         map.getLayerGroup().getLayers().item(3).getLayers().push(new ol.layer.Vector())
@@ -80,9 +80,9 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
         emprise_wfsurl = config.url_wfsemprise+"?SERVICE=WFS&REQUEST=getFeature&VERSION=2.0.0&srsName=epsg%3A4326&TYPENAME=sidhymo%3A"+type+"&outputFormat=application%2Fjson&FILTER=%3CFilter%20xmlns%3D%22http%3A%2F%2Fwww.opengis.net%2Fogc%22%3E%3CPropertyIsEqualTo%3E%3CPropertyName%3Egid%3C%2FPropertyName%3E%3CLiteral%3E"+obj+"%3C%2FLiteral%3E%3C%2FPropertyIsEqualTo%3E%3C%2FFilter%3E";
         
         // On a besoin d'avoir l'emprise chargée pour la suite: on passe en synchrone
-        jQuery.ajaxSetup({
-            async: false
-        });
+        // jQuery.ajaxSetup({
+        //     async: false
+        // });
         jQuery.getJSON(emprise_wfsurl, function(data) {
             features = new ol.format.GeoJSON().readFeatures(data, {
                 featureProjection: 'EPSG:3857'
@@ -107,9 +107,9 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
 
         });
         // Plus besoin du mode  synchrone
-        jQuery.ajaxSetup({
-            async: true
-        });
+        // jQuery.ajaxSetup({
+        //     async: true
+        // });
         // On indique que l'emprise est chargé
         jQuery('#encours_emprise').html(' <b>chargé</b>.')
     }
@@ -134,7 +134,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
             countLoading++; // Compteur de couches chargées
 
             /* Ouvrir la popup modal de chargement */
-            jQuery('#info_chargement_body').append('<span><img src="modules/custom/mapviewer/images/' + typeObjetEtude.name+ '.png" width="20" style="margin-right: 7px;"/> ' + typeObjetEtude.libelle + '<span id="encours_' + typeObjetEtude.name + '"> en cours de chargement...</span></span>');
+            jQuery('#info_chargement_body').append('<span><img src="modules/custom/mapviewer/images/' + typeObjetEtude.name+ '.png" width="20" style="margin-right: 7px;"/> ' + typeObjetEtude.libelle + '<span id="encours_' + typeObjetEtude.name + '"> en cours de chargement...</span></span><br/>');
             
             if(typeObjetEtude.type == "wfs") { // || typeEmprise != 'hydroecoregion1' || typeEmprise != 'hydroecoregion2' || typeEmprise != 'regionhydro' ) {
                 /* Récupérer et affiche le geojson des objets */
@@ -182,6 +182,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
 
                         /* Mettre à jour la popup modal quand les couches sont chargées*/
                         countLoading--; // Compteur de couches chargées
+                        console.log(countLoading);
                         jQuery('#encours_'+typeObjetEtude.name).html(' <b>chargé</b>.')
                         if (countLoading == 0) {
                             jQuery('#info_chargement').modal('hide')
@@ -190,6 +191,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                     else {
                         /* Mettre à jour la popup modal quand les couches sont chargées*/
                         countLoading--; // Compteur de couches chargées
+                        console.log(countLoading);
                         jQuery('#encours_'+typeObjetEtude.name).html(' <b>chargé</b>.')
                         if (countLoading == 0) {
                             jQuery('#info_chargement').modal('hide')
