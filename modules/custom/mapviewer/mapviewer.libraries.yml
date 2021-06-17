@@ -134,8 +134,8 @@ main:
   dependencies:
     - core/jquery
     - mapviewer/openlayers    
+    - mapviewer/ol-ext
     - mapviewer/layerswitcher
-    # - mapviewer/ol-ext
     - mapviewer/select2
     - mapviewer/select2_maximize
     - mapviewer/jquery_ui 

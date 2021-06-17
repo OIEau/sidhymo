@@ -42,6 +42,17 @@
 .ol-zoom {
     top: .5em;
     left: 25px !important;
+} 
+
+.ol-control.ol-legend {
+    bottom: 2.5em!important;
+    right: .5em!important;
+    left: unset !important;
+    background: white;
+}
+
+.ol-legend button:before, .ol-legend button:after {
+    margin: 10px;
 }
 
 .selectemp {

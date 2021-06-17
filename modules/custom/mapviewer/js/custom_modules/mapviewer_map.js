@@ -616,6 +616,29 @@ var map = function(mapDiv, fichehandler_instance){
 
     }
 
+    this.addLegend = function () {
+        // Define a new legend
+        var legend = new ol.legend.Legend({ 
+            title: 'Légende',
+            margin: 10
+        });
+        var legendCtrl = new ol.control.Legend({
+            legend: legend,
+            collapsed: true
+        });
+        map.addControl(legendCtrl);
+        
+        // Pour chaque style défini pour les objets d'étude
+        config.array_objets_etude.forEach(function(typeObjetEtude, i) {
+            legend.addItem({ 
+                title: typeObjetEtude.libelle, 
+                typeGeom: typeObjetEtude.typeStyle,
+                style: typeObjetEtude.style
+            });
+            
+        });
+    }
+
     /*
      * Créer le contenu de la popup
      */

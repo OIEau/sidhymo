@@ -12,6 +12,7 @@ var config = {
                                 name : 'usra',
                                 libelle : 'Unité Spatiale de Recueil et d\'Analyse (USRA)',
                                 code : 'id_usra_dd',
+                                typeStyle: 'MultiLineString',
                                 style : [
                                     new ol.style.Style({
                                         /* Les traits, en bleu un peu épais */
@@ -21,9 +22,9 @@ var config = {
                                             width: 7
                                         }),
                                         /* Couleur de remplissage */
-                                        fill: new ol.style.Fill({
-                                            color: [61, 96, 152, 0.5]
-                                        }),
+                                        // fill: new ol.style.Fill({
+                                        //     color: [61, 96, 152, 0.5]
+                                        // }),
                                         zIndex: 10
                                     }),
                                 ]
@@ -34,6 +35,7 @@ var config = {
                                 name : 'tgh',
                                 libelle : 'Tronçon Geomorphologiquement Homogène (TGH)',
                                 code: 'id_troncon',
+                                typeStyle: 'MultiLineString',
                                 style : [
                                     new ol.style.Style({
                                         /* Les traits, en bleu un peu épais */
@@ -43,9 +45,9 @@ var config = {
                                             width: 4
                                         }),
                                         /* Couleur de remplissage */
-                                        fill: new ol.style.Fill({
-                                            color: [61, 96, 152, 0.5]
-                                        }),
+                                        // fill: new ol.style.Fill({
+                                        //     color: [61, 96, 152, 0.5]
+                                        // }),
                                         zIndex: 10
                                     }),
                                 ]
@@ -55,7 +57,19 @@ var config = {
                                 name: 'roe',
                                 libelle: 'Obstacle à l\'écoulement',
                                 code : 'identifiant_roe',
+                                typeStyle: 'MultiPoint',
                                 style: [
+                                    new ol.style.Style({
+                                        image: new ol.style.Icon({ /** @type {olx.style.IconOptions} */
+                                            anchor: [12.5, 39],
+                                            src: 'modules/custom/mapviewer/images/marker-shadow.png',
+                                            anchorXUnits: 'pixels',
+                                            anchorYUnits: 'pixels',
+                                            opacity: 0.50,
+                                            scale: 0.5,
+                                        }),
+                                        zIndex: 9
+                                    }),
                                     new ol.style.Style({
                                         /* Les points seront des puces bleues (une image) */
                                         image: new ol.style.Icon({ /** @type {olx.style.IconOptions} */
@@ -67,17 +81,6 @@ var config = {
                                             scale: 0.5,
                                         }),
                                         zIndex: 10
-                                    }),
-                                    new ol.style.Style({
-                                        image: new ol.style.Icon({ /** @type {olx.style.IconOptions} */
-                                            anchor: [12.5, 39],
-                                            src: 'modules/custom/mapviewer/images/marker-shadow.png',
-                                            anchorXUnits: 'pixels',
-                                            anchorYUnits: 'pixels',
-                                            opacity: 0.50,
-                                            scale: 0.5,
-                                        }),
-                                        zIndex: 9
                                     })
                                 ]
                             },
@@ -86,7 +89,18 @@ var config = {
                                 name: 'roeice',
                                 libelle: 'Obstacle à l\'écoulement ICE',
                                 code : 'identifiant_roe',
+                                typeStyle: 'MultiPoint',
                                 style: [
+                                    new ol.style.Style({
+                                        image: new ol.style.Icon({ /** @type {olx.style.IconOptions} */
+                                            anchor: [12.5, 39],
+                                            src: 'modules/custom/mapviewer/images/marker-shadow.png',
+                                            anchorXUnits: 'pixels',
+                                            anchorYUnits: 'pixels',
+                                            opacity: 0.90,
+                                        }),
+                                        zIndex: 9
+                                    }),
                                     new ol.style.Style({
                                         /* Les points seront des puces bleues (une image) */
                                         image: new ol.style.Icon({ /** @type {olx.style.IconOptions} */
@@ -97,7 +111,16 @@ var config = {
                                             opacity: 0.90,
                                         }),
                                         zIndex: 10
-                                    }),
+                                    })
+                                ]
+                            },
+                            {
+                                type : 'wfs',
+                                name: 'stcarhyce',
+                                libelle: 'Station de mesure Carhyce',
+                                code : 'code_station',
+                                typeStyle: 'MultiPoint',
+                                style: [
                                     new ol.style.Style({
                                         image: new ol.style.Icon({ /** @type {olx.style.IconOptions} */
                                             anchor: [12.5, 39],
@@ -107,15 +130,7 @@ var config = {
                                             opacity: 0.90,
                                         }),
                                         zIndex: 9
-                                    })
-                                ]
-                            },
-                            {
-                                type : 'wfs',
-                                name: 'stcarhyce',
-                                libelle: 'Station de mesure Carhyce',
-                                code : 'code_station',
-                                style: [
+                                    }),
                                     new ol.style.Style({
                                         /* Les points seront des puces bleues (une image) */
                                         image: new ol.style.Icon({ /** @type {olx.style.IconOptions} */
@@ -126,16 +141,6 @@ var config = {
                                             opacity: 0.90,
                                         }),
                                         zIndex: 10
-                                    }),
-                                    new ol.style.Style({
-                                        image: new ol.style.Icon({ /** @type {olx.style.IconOptions} */
-                                            anchor: [12.5, 39],
-                                            src: 'modules/custom/mapviewer/images/marker-shadow.png',
-                                            anchorXUnits: 'pixels',
-                                            anchorYUnits: 'pixels',
-                                            opacity: 0.90,
-                                        }),
-                                        zIndex: 9
                                     })
                                 ]
                             }
@@ -158,7 +163,8 @@ jQuery('#document').ready(function() {
     map2.addLayerSwitcher();
     map2.ficheControler();
     map2.highlightControler();
-
+    map2.addLegend();
+    
     //Hauteur de la map
     var taille=jQuery('.path-frontpage').height()-jQuery('#header-menu').height()-parseInt(jQuery('#header-brand').css('padding-top'))-jQuery('#header-brand').height()-1
     jQuery('#map').css('height',taille+"px");
