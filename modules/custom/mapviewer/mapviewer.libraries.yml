@@ -25,10 +25,11 @@ ol-ext:
   version: 1.0
   css:
     theme:
-      https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.css: {}
+      # https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.css: {}
+      js/lib/ol-ext.min.css: {}
   js:
-    https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.js: { type: external}
-
+    # https://cdn.rawgit.com/Viglino/ol-ext/master/dist/ol-ext.min.js: { type: external}
+    js/lib/ol-ext.min.js: {} 
 
 ## POUR LA RECHERCHER
 select2:
@@ -104,28 +105,28 @@ anychart-radar:
 
 ## FICHIER CUSTOM
 mapviewer_map:
-  version : 0.1
+  version : 0.2
   js:
     js/custom_modules/mapviewer_map.js: {}
 
 mapviewer_searchbar:
-  version : 0.1
+  version : 0.2
   js:
     js/custom_modules/mapviewer_searchbar.js: {}
 
 mapviewer_resultable:
-  version: 0.1
+  version: 0.2
   js:
     js/custom_modules/mapviewer_resultable.js: {}  
 
 mapviewer_fichehandler:
-  version: 0.1
+  version: 0.2
   js:
     js/custom_modules/mapviewer_fichehandler.js: {}  
 
 ## MAIN
 main:
-  version: 0.1
+  version: 0.2
   css:
     theme:
       css/mapviewer.css: {}
