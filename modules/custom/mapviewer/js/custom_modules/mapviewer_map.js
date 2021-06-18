@@ -4,6 +4,7 @@
 var map = function(mapDiv, fichehandler_instance){
     var root = this;
     var localfichehandler = new Object();
+    _this = this;
 
     this.territoire = "met";
 
@@ -557,6 +558,9 @@ var map = function(mapDiv, fichehandler_instance){
         var selectedFeature = null;
         var selectedFeatureOldStyle = null;
         map.on('pointermove', function(evt) {
+            //Popup info sur un element
+            _this.showInfo(evt);
+
             if (!evt.dragging) {
                 var feature = ""
                 var layer = ""
@@ -595,10 +599,10 @@ var map = function(mapDiv, fichehandler_instance){
                     // Enregistrer le style et la feature pour annuler plus tard
                     selectedFeature = feature;
                     selectedFeatureOldStyle = feature.getStyle();
-                    name = layer.get('name');
+                    layername = layer.get('name');
                     // Changer le style de l'actuelle
-                    if(eval('root.styles.hover'+name+'Style')) {
-                        feature.setStyle(eval('root.styles.hover'+name+'Style'));
+                    if(eval('root.styles.hover'+layername+'Style')) {
+                        feature.setStyle(eval('root.styles.hover'+layername+'Style'));
                     }
                     else {
                         feature.setStyle(root.styles.redStyle);
@@ -616,6 +620,36 @@ var map = function(mapDiv, fichehandler_instance){
 
     }
 
+    /* Affiche une bulle sur une properties de la map */
+    this.showInfo = function (event) {
+        var features = map.getFeaturesAtPixel(event.pixel);
+        if (features.length == 0) {
+          map.getOverlayById(1).setPosition(undefined);
+          return;
+        }
+  
+        var properties = features[0].getProperties();
+  
+        if (properties.type==undefined) {
+          map.getOverlayById(1).setPosition(undefined);
+          return;
+        }
+  
+        properties.libelle==null? libelle="" : libelle=properties.libelle+" - "
+        type = properties.type.toLowerCase().split("_")[0];
+        for (var variable in config.array_objets_etude) {
+          if (config.array_objets_etude[variable].name==type) {
+            type=config.array_objets_etude[variable].libelle
+            break
+          }
+        }
+  
+        var coordinate = event.coordinate;
+        jQuery('#popup-info-content').html("<p style='text-align: center;font-weight: bold;'>" + type + "</p><p class='text-center'>"+libelle+properties.gid+"</p>");
+        map.getOverlayById(1).setPosition(coordinate);
+    }
+    
+    /* Légende de la carte  */
     this.addLegend = function () {
         // Define a new legend
         var legend = new ol.legend.Legend({ 

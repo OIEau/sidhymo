@@ -148,15 +148,12 @@ var config = {
 };
 
 jQuery('#document').ready(function() {
-
-  // return 0;
-    // jQuery('#spinner').hide();
-
     // Construct
     fichehandler2 = new fichehandler();
     map2 = new map('map', fichehandler2);
     resultable2 = new resultable(map2, fichehandler2);
-    searchbar2 = new searchbar('searchbar', map2, resultable2)
+    searchbar2 = new searchbar('searchbar', map2, resultable2);
+    fichehandler2.setLocalSearchBar(searchbar2);
 
     // do
     map2.initemprisesgeo(resultable2);
@@ -165,26 +162,12 @@ jQuery('#document').ready(function() {
     map2.highlightControler();
     map2.addLegend();
     
-    //Hauteur de la map
+    // Hauteur de la map
     var taille=jQuery('.path-frontpage').height()-jQuery('#header-menu').height()-parseInt(jQuery('#header-brand').css('padding-top'))-jQuery('#header-brand').height()-1
     jQuery('#map').css('height',taille+"px");
-
-
-    // jQuery("#stcarhyce").toast({delay:1000});
-    // jQuery("#stcarhyce").toast('show');
-    // jQuery("#roe").toast({delay:4000});
-    // jQuery("#roe").toast('show');
-    // jQuery("#roeice").toast({delay:7000});
-    // jQuery("#roeice").toast('show');
-
-
-    // addLayerSelection();
-    // // Pour accélerer le developement
-    // searchbar2.getEmpriseEtObjetDetude('commune',34192,'87001 Aixe-sur-Vienne')
-    // resultable2 = new resultable();
-    // jQuery('#modalinformation').modal('show')
-    // fichehandler2.createfiche("stcarhyce", "4079750")
 });
+
+/* Redimensionner la carte lors du redimensionnement de la fenêtre */
 jQuery( window ).resize(function() {
   var taille=jQuery('.path-frontpage').height()-jQuery('#header-menu').height()-parseInt(jQuery('#header-brand').css('padding-top'))-jQuery('#header-brand').height()-1
   jQuery('#map').css('height',taille+"px");

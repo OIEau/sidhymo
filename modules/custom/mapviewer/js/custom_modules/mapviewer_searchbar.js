@@ -130,7 +130,6 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
         var countLoading = 0;
         // FOREACH
         config.array_objets_etude.forEach(function(typeObjetEtude, index) {
-            console.log(countLoading);
             countLoading++; // Compteur de couches chargées
 
             /* Ouvrir la popup modal de chargement */
@@ -177,12 +176,8 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                         // Ajouter au tableau HTML
                         localresultable.appendToResultTable(typeObjetEtude, data)
 
-                        //Popup info sur un element
-                        map.on('pointermove', _this.showInfo);
-
                         /* Mettre à jour la popup modal quand les couches sont chargées*/
                         countLoading--; // Compteur de couches chargées
-                        console.log(countLoading);
                         jQuery('#encours_'+typeObjetEtude.name).html(' <b>chargé</b>.')
                         if (countLoading == 0) {
                             jQuery('#info_chargement').modal('hide')
@@ -261,37 +256,6 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
     //     jQuery("#notif"+type).toast('show')
     //     return jQuery("#notif"+type);
     // }
-
-    ////////
-    // Affiche une bulle sur une properties de la map
-    ////////
-    this.showInfo = function (event) {
-      var features = map.getFeaturesAtPixel(event.pixel);
-      if (features.length == 0) {
-        map.getOverlayById(1).setPosition(undefined);
-        return;
-      }
-
-      var properties = features[0].getProperties();
-
-      if (properties.type==undefined) {
-        map.getOverlayById(1).setPosition(undefined);
-        return;
-      }
-
-      properties.libelle==null? libelle="" : libelle=properties.libelle+" - "
-      type = properties.type.toLowerCase().split("_")[0];
-      for (var variable in config.array_objets_etude) {
-        if (config.array_objets_etude[variable].name==type) {
-          type=config.array_objets_etude[variable].libelle
-          break
-        }
-      }
-
-      var coordinate = event.coordinate;
-      jQuery('#popup-info-content').html("<p>" + type + "</p><p class='text-center'>"+libelle+properties.gid+"</p>");
-      map.getOverlayById(1).setPosition(coordinate);
-    }
 
     /*
      * Pass options when class instantiated

@@ -1,14 +1,20 @@
 /*
  * Class resultable
  */
-var fichehandler = function(options){
-  var root=this;
+var fichehandler = function() {
+    var root=this;
+    var localsearchbar = new Object();
+
     /*
      * Constructeur
      */
-    this.construct = function(options){
+    this.construct = function(){
 
     };
+
+    this.setLocalSearchBar = function(myLocalSearchBar) {
+      localsearchbar = myLocalSearchBar;
+    }; 
 
     /*
      * Créé dynamiquement la fiche à partir de "typeobjet"
@@ -31,6 +37,7 @@ var fichehandler = function(options){
           if ( typeobjet == "stcarhyce" ) {
             make_stcarhyce(idobjet);
           }
+          // Dans les TGH il y a moyen de cliquer sur une USRA
           if ( typeobjet == "tgh" ) {
             jQuery(".informationusra").click(function() {
               root.createfiche(territoire,'usra',jQuery(".informationusra").attr('id'));
@@ -38,8 +45,18 @@ var fichehandler = function(options){
               createModal();
             });
           }
+
+          // Dans les informations, il y a moyen de changer d'emprise
+          jQuery(".change_emprise").click(function() {
+            // Fermer la popup
+            jQuery('#modalinformation').modal('hide')
+            splitchoice = this.id.split('.')
+            console.log(jQuery(this).text());
+            localsearchbar.getEmpriseEtObjetDetude(splitchoice[0], splitchoice[1], jQuery(this).text())
+          });
+
           if( status == "error" ) {
-              jQuery('#fiche_content').html("Désolé, cette fiche n'a pas encore été crée...")
+              jQuery('#fiche_content').html("Désolé, cette fiche n'a pas encore été crée.")
           }
       });
       jQuery('#modalinformation').on('hidden.bs.modal', function (e) {
@@ -124,62 +141,8 @@ var fichehandler = function(options){
 
     };
 
-    // /*
-    //  * Créé le IMG
-    //  */
-    // var makeImgChart = function(idobjet) {
-    //   anychart.onDocumentReady(function () {
-    //     // create data for the second series
-    //     var data_2 = [
-    //       {"x": "Rapport Largeur/Profondeur à plein bord", "value": 0.56},
-    //       {"x": "Largeur à plein bord", "value": 0.258},
-    //       {"x": "Surface mouillée plein bord", "value": 0.327},
-    //       {"x": "Pente de la ligne d'eau", "value": 0.337},
-    //       {"x": "Profondeur maximale à plein bord", "value": 0.597},
-    //       {"x": "Profondeur des mouilles", "value": 0.357}
-    //     ];
-
-    //     var x0 = data_2[0].value;
-    //     var x1 = data_2[1].value;
-    //     var x2 = data_2[2].value;
-    //     var x3 = data_2[3].value;
-    //     var x4 = data_2[4].value;
-    //     var x5 = data_2[5].value;
-    //     var IMG = parseFloat(x0 + x1 + x2 + x3 + x4 + x5).toFixed(2);
-    //     // console.log(IMG);
-    //     // document.getElementById('IMG').innerHTML = 'IMG=' + IMG;
-    //     // console.log(name);
-
-    //     // create a chart
-    //     chart = anychart.radar();
-    //     //chart.yScale().minimum(0);
-    //     //chart.yScale().maximum(5);
-    //     var ticksArray = [0, 1, 2, 3, 4, 5];
-    //     chart.yScale().ticks().set(ticksArray);
-
-
-    //     var labels = chart.xAxis().labels();
-    //     labels.fontFamily("Courier");
-    //     labels.fontSize(14);
-    //     labels.fontColor("#125393");
-    //     labels.fontWeight("bold");
-
-    //     // create the first series (line) and set the data
-    //     // var series1 = chart.line(data_1);
-
-    //     // create the second series (area) and set the data
-    //     var series2 = chart.area(data_2);
-
-    //     // set the container id
-    //     chart.container("imgcontainer");
-
-    //     // initiate drawing the chart
-    //     chart.draw();
-    //   });
-    // };
-
     /*
      * Pass options when class instantiated
      */
-    this.construct(options);
+    this.construct();
 };

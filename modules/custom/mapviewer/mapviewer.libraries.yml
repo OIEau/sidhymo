@@ -60,13 +60,6 @@ jquery_ui:
     # https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js: {type: external}
     js/lib/jquery-ui.min.js: {} 
 
-popper:
-  version: 1.16.1
-  js:
-    https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js: {type: external}
-    # js/lib/jquery-ui.min.js: {} 
-
-
 tablesorter:
   version: 2.31.3
   css:
@@ -105,28 +98,28 @@ anychart-radar:
 
 ## FICHIER CUSTOM
 mapviewer_map:
-  version : 0.2
+  version : 0.3
   js:
     js/custom_modules/mapviewer_map.js: {}
 
 mapviewer_searchbar:
-  version : 0.2
+  version : 0.3
   js:
     js/custom_modules/mapviewer_searchbar.js: {}
 
 mapviewer_resultable:
-  version: 0.2
+  version: 0.3
   js:
     js/custom_modules/mapviewer_resultable.js: {}  
 
 mapviewer_fichehandler:
-  version: 0.2
+  version: 0.3
   js:
     js/custom_modules/mapviewer_fichehandler.js: {}  
 
 ## MAIN
 main:
-  version: 0.2
+  version: 0.3
   css:
     theme:
       css/mapviewer.css: {}
@@ -140,7 +133,6 @@ main:
     - mapviewer/select2
     - mapviewer/select2_maximize
     - mapviewer/jquery_ui 
-    # - mapviewer/popper
     - mapviewer/tablesorter
     - mapviewer/tablesorter_widget
     - mapviewer/plotly
