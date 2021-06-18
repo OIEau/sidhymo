@@ -6795,6 +6795,7 @@ input[type="button"].btn-block {
   font-size: 1.25rem;
   line-height: inherit;
   white-space: nowrap;
+  color: #79ad24;
 }
 .navbar-brand:hover,
 .navbar-brand:focus {
@@ -17316,7 +17317,6 @@ footer .region-footer-left .block ul li:before {
 
 #header-brand a.navbar-brand {
   font-weight: 500;
-  color: white;
   font-size: 1.5rem;
   text-transform: uppercase;
   text-decoration: none;
