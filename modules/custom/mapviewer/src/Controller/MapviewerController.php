@@ -242,20 +242,21 @@ class MapviewerController extends ControllerBase
                     $configterr = $this->config_objet[$type]['drom'];
                     $type       = $type . "_" . $territoire;
                 }
-                // return "",
             }
 
             // Pour chaque couche ci-dessus rechercher les intersections avec l'objet
             $connection      = Database::getConnection('default', 'data_sidhymo');
             foreach ($this->config_emprise as $objet => $config_objet) {
                 // Requete
-                $query = $connection->query("SELECT t1." . $config_objet['code'] . ", t1." . $config_objet['libelle'] . " FROM public.$objet t1, public." . $type . " t2 WHERE t2." . $configterr['code'] . "='$code' AND ST_DWithin(t1.geom, t2.geom, 0.001)");
+                $query = $connection->query("SELECT t1.gid, t1." . $config_objet['code'] . ", t1." . $config_objet['libelle'] . " FROM public.$objet t1, public." . $type . " t2 WHERE t2." . $configterr['code'] . "='$code' AND ST_DWithin(t1.geom, t2.geom, 0.001)");
                 if ($res = $query->fetch()) {
+                    $gid               = $res->gid;
                     $cd                = $res->{$config_objet['code']};
                     $nom               = $res->{$config_objet['libelle']};
-                    $localinfo_items[] = array('#markup' => '<b>' . $config_objet['libelle_objet'] . "</b> : $nom [$cd]");
+                    $localinfo_items[] = array('#markup' => '<b>' . $config_objet['libelle_objet'] . "</b> : <a href='#' class='change_emprise' id='$objet.$gid' >$nom [$cd]</a>");
                 }
             }
+            
 
             \Drupal::cache()->set($cid, $localinfo_items, CacheBackendInterface::CACHE_PERMANENT);
         }

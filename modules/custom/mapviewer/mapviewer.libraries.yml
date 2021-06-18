@@ -105,28 +105,28 @@ anychart-radar:
 
 ## FICHIER CUSTOM
 mapviewer_map:
-  version : 0.2
+  version : 0.3
   js:
     js/custom_modules/mapviewer_map.js: {}
 
 mapviewer_searchbar:
-  version : 0.2
+  version : 0.3
   js:
     js/custom_modules/mapviewer_searchbar.js: {}
 
 mapviewer_resultable:
-  version: 0.2
+  version: 0.3
   js:
     js/custom_modules/mapviewer_resultable.js: {}  
 
 mapviewer_fichehandler:
-  version: 0.2
+  version: 0.3
   js:
     js/custom_modules/mapviewer_fichehandler.js: {}  
 
 ## MAIN
 main:
-  version: 0.2
+  version: 0.3
   css:
     theme:
       css/mapviewer.css: {}
