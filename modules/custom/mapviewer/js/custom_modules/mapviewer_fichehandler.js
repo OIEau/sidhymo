@@ -21,6 +21,8 @@ var fichehandler = function() {
      * Exemple:
      */
     this.createfiche = function(territoire, typeobjet, idobjet) {
+      console.log(territoire+" "+typeobjet+" "+idobjet)
+      
       // Afficher la fiche modal
       jQuery('#modalinformation').modal('show')
 

@@ -156,10 +156,11 @@
 }
 
 .add-layer-control {
-    top: 100px;
-    right: 8px;
+    position: absolute;
+    top: 6.5em;
+    right: 0.5em;
+    text-align: left;
 }
-
 
 #group-select-style-input:hover {
     background-color: rgba(0,60,136,.7);
@@ -167,15 +168,16 @@
 
 #group-select-style-input {
     background-image: url(../images/layeradd.png);
-    background-size: 20px;
+    background-size: 24px;
     background-repeat: no-repeat;
+    background-position: 13px;
     color: white;
     font-size: 1.14em;
     font-weight: 700;
     text-decoration: none;
     text-align: center;
-    height: 1.375em;
-    width: 1.4em;
+    height: 2.375em;
+    width: 2.4em;
     line-height: 0;
     background-color: rgba(0, 60, 136, .5);
     border-radius: 2px;

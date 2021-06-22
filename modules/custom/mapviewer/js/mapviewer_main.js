@@ -11,7 +11,7 @@ var config = {
                                 type : 'wfs',
                                 name : 'usra',
                                 libelle : 'Unité Spatiale de Recueil et d\'Analyse (USRA)',
-                                code : 'id_usra_dd',
+                                code : 'code',
                                 typeStyle: 'MultiLineString',
                                 style : [
                                     new ol.style.Style({
@@ -34,7 +34,7 @@ var config = {
                                 type : 'wfs',
                                 name : 'tgh',
                                 libelle : 'Tronçon Geomorphologiquement Homogène (TGH)',
-                                code: 'id_troncon',
+                                code: 'code',
                                 typeStyle: 'MultiLineString',
                                 style : [
                                     new ol.style.Style({
@@ -56,7 +56,7 @@ var config = {
                                 type : 'wfs',
                                 name: 'roe',
                                 libelle: 'Obstacle à l\'écoulement',
-                                code : 'identifiant_roe',
+                                code : 'cdobstecou',
                                 typeStyle: 'MultiPoint',
                                 style: [
                                     new ol.style.Style({
@@ -161,6 +161,7 @@ jQuery('#document').ready(function() {
     map2.ficheControler();
     map2.highlightControler();
     map2.addLegend();
+    map2.addLayerSelection();
     
     // Hauteur de la map
     var taille=jQuery('.path-frontpage').height()-jQuery('#header-menu').height()-parseInt(jQuery('#header-brand').css('padding-top'))-jQuery('#header-brand').height()-1
