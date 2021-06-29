@@ -489,7 +489,7 @@ var map = function(mapDiv, fichehandler_instance){
         }).then(function(text) {
             var result = parser.read(text);
             result.Capability.Layer.Layer.forEach((layer, index) => {
-                optgroup = createOptGroup(layer.Name);
+                optgroup = createOptGroup(layer.Title);
                 if(layer.Layer != undefined) {
                     layer.Layer.forEach((sslayer, index) => {
                         optgroup.appendChild(createOption(sslayer.Name, sslayer.Title));

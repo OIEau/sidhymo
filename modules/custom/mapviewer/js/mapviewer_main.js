@@ -7,7 +7,7 @@ var config = {
     url_gettableterritoires : 'gettableterritoires',
     array_objets_etude  : [
                             {
-                                // type : 'wms',
+                                // type : 'wms', /* possibilité de définir un type WMS pas encore active, mais en cours de développement */ 
                                 type : 'wfs',
                                 name : 'usra',
                                 libelle : 'Unité Spatiale de Recueil et d\'Analyse (USRA)',
