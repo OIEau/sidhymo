@@ -16,6 +16,7 @@
     ],
     "require": {
         "composer/installers": "^1.9",
+        "cweagans/composer-patches": "^1.7",
         "doctrine/common": "^2.7",
         "drupal/bfd": "^2.65",
         "drupal/bootstrap_barrio": "^4.30",
@@ -25,6 +26,7 @@
         "drupal/core-vendor-hardening": "^9",
         "drupal/ctools": "^3.6",
         "drupal/devel": "^4.1",
+        "drupal/google_analytics": "^3.1",
         "drupal/pathauto": "^1.8",
         "drush/drush": "^10.3"
     },
@@ -41,6 +43,11 @@
             "locations": {
                 "web-root": "./"
             }
+        },
+        "patches": {
+          "drupal/google_analytics":{
+            "update v4 google analytics": "https://www.drupal.org/files/issues/2020-11-19/3178179-13.patch"
+          }
         },
         "installer-paths": {
             "core": [

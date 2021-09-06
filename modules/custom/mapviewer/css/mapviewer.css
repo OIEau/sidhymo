@@ -162,10 +162,6 @@
     text-align: left;
 }
 
-#group-select-style-input:hover {
-    background-color: rgba(0,60,136,.7);
-}
-
 #group-select-style-input {
     background-image: url(../images/layeradd.png);
     background-size: 24px;
@@ -188,6 +184,14 @@
     -ms-user-select: none;
     user-select: none;
     -webkit-appearance: none;
+}
+
+#group-select-style-input optgroup {
+    font-size: 13px;
+}
+
+select#group-select-style-input optgroup {
+    font-size: 12px;
 }
 
 /* Popup Carto */
