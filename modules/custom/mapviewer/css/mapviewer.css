@@ -167,7 +167,7 @@
     background-size: 24px;
     background-repeat: no-repeat;
     background-position: 13px;
-    color: white;
+    color: rgba(255, 255, 255);
     font-size: 1.14em;
     font-weight: 700;
     text-decoration: none;
@@ -184,6 +184,12 @@
     -ms-user-select: none;
     user-select: none;
     -webkit-appearance: none;
+}
+/* pour firfox */
+@-moz-document url-prefix() {
+    #group-select-style-input {
+        color: rgba(255,255,255, 0);
+    }
 }
 
 #group-select-style-input optgroup {
