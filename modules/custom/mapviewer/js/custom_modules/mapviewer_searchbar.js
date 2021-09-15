@@ -31,16 +31,17 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                 // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
             }
         }).on('select2:select', function (e) {
+            /* Supprimer et recréer l'objet tooltip*/
+            jQuery('.ui-tooltip').hide();
+
             if(e.params.data.id) {
                 splitchoice = e.params.data.id.split('.')
                 _this.getEmpriseEtObjetDetude(splitchoice[0], splitchoice[1], e.params.data.text)
             }
         }).on('select2:open', function(e)  {
-            jQuery('#select2-searchbar-results').attr("data-toggle", "tooltip");
-            jQuery('#select2-searchbar-results').attr("data-placement", "auto");
-            jQuery('#select2-searchbar-results').attr("data-offset", "100");
-            jQuery('#select2-searchbar-results').attr("title", "Seuls les 5 premiers éléments de chaque groupe sont affichés par défaut. Faites une recherche dans le champ texte ci-dessus pour en choisir d'autres.");
-            jQuery('[data-toggle="tooltip"]').tooltip({
+            jQuery('.ui-tooltip').show();
+            jQuery('#select2-searchbar-results').attr("title", "Seuls les premiers 5 éléments de chaque groupe sont affichés par défaut. Faites une recherche dans le champ texte ci-dessus pour en choisir d'autres.");
+            jQuery('#select2-searchbar-results').tooltip({
                 track : true, 
                 show: {
                     delay: 1000
@@ -198,7 +199,6 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                     else {
                         /* Mettre à jour la popup modal quand les couches sont chargées*/
                         countLoading--; // Compteur de couches chargées
-                        console.log(countLoading);
                         jQuery('#encours_'+typeObjetEtude.name).html(' <b>chargé</b>.')
                         if (countLoading == 0) {
                             jQuery('#info_chargement').modal('hide')
