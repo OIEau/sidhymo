@@ -147,7 +147,7 @@ var config = {
                           ]
 };
 
-jQuery('#document').ready(function() {
+jQuery(document).ready(function() {
     // Construct
     fichehandler2 = new fichehandler();
     map2 = new map('map', fichehandler2);

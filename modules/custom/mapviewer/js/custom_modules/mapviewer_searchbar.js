@@ -15,6 +15,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
         jQuery('#'+searchbardiv).select2({
             placeholder: "Recherchez une commune, une département, un cours d'eau...",
             language: "fr",
+            dropdownCssClass: "select_tooltip",
             ajax: {
                 url: config.url_searchemprise,
                 dataType: 'json',
@@ -34,7 +35,21 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                 splitchoice = e.params.data.id.split('.')
                 _this.getEmpriseEtObjetDetude(splitchoice[0], splitchoice[1], e.params.data.text)
             }
+        }).on('select2:open', function(e)  {
+            jQuery('#select2-searchbar-results').attr("data-toggle", "tooltip");
+            jQuery('#select2-searchbar-results').attr("data-placement", "auto");
+            jQuery('#select2-searchbar-results').attr("data-offset", "100");
+            jQuery('#select2-searchbar-results').attr("title", "Seuls les 5 premiers éléments de chaque groupe sont affichés par défaut. Faites une recherche dans le champ texte ci-dessus pour en choisir d'autres.");
+            jQuery('[data-toggle="tooltip"]').tooltip({
+                track : true, 
+                show: {
+                    delay: 1000
+                }
+            });
         }).maximizeSelect2Height();
+
+
+
 
         // Inutile ? 
         // jQuery('.select2').on('click', function () {

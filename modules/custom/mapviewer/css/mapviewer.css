@@ -443,3 +443,8 @@ a[id$='-tab'][id^='habitat']:focus:after {
 #notifications {
     width: 99%;
 }
+
+.ui-tooltip-content {
+    font-size: 14px !important;
+    color: dimgrey !important;
+}
