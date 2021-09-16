@@ -31,9 +31,6 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                 // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
             }
         }).on('select2:select', function (e) {
-            /* Supprimer et recréer l'objet tooltip*/
-            jQuery('.ui-tooltip').hide();
-
             if(e.params.data.id) {
                 splitchoice = e.params.data.id.split('.')
                 _this.getEmpriseEtObjetDetude(splitchoice[0], splitchoice[1], e.params.data.text)
@@ -47,6 +44,8 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                     delay: 1000
                 }
             });
+        }).on('select2:close', function(e)  {
+            jQuery('.ui-tooltip').hide();
         }).maximizeSelect2Height();
 
 
@@ -77,8 +76,8 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
      * initialise les couches interactives: c'est à dire enlève toutes les couches déjà ajouté par une recherche précedente
      */
     var initEmpriseEtObjetDetude = function() {
-        while (map.getLayerGroup().getLayers().item(3).getLayers().getLength() > 0) {
-            map.getLayerGroup().getLayers().item(3).getLayers().pop()
+        while (map.getLayerGroup().getLayers().item(4).getLayers().getLength() > 0) {
+            map.getLayerGroup().getLayers().item(4).getLayers().pop()
         }
     };
 
@@ -87,7 +86,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
      */
     var addEmprise = function(type, obj, layername) {
         /* Init */
-        map.getLayerGroup().getLayers().item(3).getLayers().push(new ol.layer.Vector())
+        map.getLayerGroup().getLayers().item(4).getLayers().push(new ol.layer.Vector())
         vectorSourceEmprise = new ol.source.Vector();
 
         /* Geojson de l'emprise */
@@ -116,8 +115,8 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
             map.getView().fit(vectorSourceEmprise.getExtent(), { duration: 500 } );
             
             // Ajouter au groupe interactif la nouvelle layer
-            map.getLayerGroup().getLayers().item(3).getLayers().removeAt(0);
-            map.getLayerGroup().getLayers().item(3).getLayers().insertAt(0, vectorEmprise)
+            map.getLayerGroup().getLayers().item(4).getLayers().removeAt(0);
+            map.getLayerGroup().getLayers().item(4).getLayers().insertAt(0, vectorEmprise)
         });
         // Plus besoin du mode  synchrone
         jQuery.ajaxSetup({
@@ -135,7 +134,7 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
 
         /* Initialiser les layers qui vont accueilir les couches. ajouter au groupe 'interactif' */
         config.array_objets_etude.forEach(function(typeObjetEtude){
-            map.getLayerGroup().getLayers().item(3).getLayers().push(new ol.layer.Vector())
+            map.getLayerGroup().getLayers().item(4).getLayers().push(new ol.layer.Vector())
         });
 
 
@@ -183,8 +182,8 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                         });
 
                         // Ajouter au groupe interactif la nouvelle layer
-                        map.getLayerGroup().getLayers().item(3).getLayers().removeAt(index+1);
-                        map.getLayerGroup().getLayers().item(3).getLayers().insertAt(index+1, vectorObjet)
+                        map.getLayerGroup().getLayers().item(4).getLayers().removeAt(index+1);
+                        map.getLayerGroup().getLayers().item(4).getLayers().insertAt(index+1, vectorObjet)
 
                         // Ajouter au tableau HTML
                         localresultable.appendToResultTable(typeObjetEtude, data)
@@ -193,7 +192,10 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                         countLoading--; // Compteur de couches chargées
                         jQuery('#encours_'+typeObjetEtude.name).html(' <b>chargé</b>.')
                         if (countLoading == 0) {
-                            jQuery('#info_chargement').modal('hide')
+                            setTimeout(function(){
+                                jQuery('#info_chargement').modal('hide');
+                                jQuery('#info_chargement_body').html('');
+                            },500);
                         }
                     }
                     else {
@@ -201,7 +203,10 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                         countLoading--; // Compteur de couches chargées
                         jQuery('#encours_'+typeObjetEtude.name).html(' <b>chargé</b>.')
                         if (countLoading == 0) {
-                            jQuery('#info_chargement').modal('hide')
+                            setTimeout(function(){
+                                jQuery('#info_chargement').modal('hide');
+                                jQuery('#info_chargement_body').html('');
+                            },500);                        
                         }
                     }
                 });
@@ -249,8 +254,8 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                 });
 
                 // Ajouter au groupe interactif la nouvelle layer
-                map.getLayerGroup().getLayers().item(3).getLayers().removeAt(index+1);
-                map.getLayerGroup().getLayers().item(3).getLayers().insertAt(index+1, wms_tile);
+                map.getLayerGroup().getLayers().item(4).getLayers().removeAt(index+1);
+                map.getLayerGroup().getLayers().item(4).getLayers().insertAt(index+1, wms_tile);
                 layerSwitcher.renderPanel();
 
                 /* Mettre à jour la popup modal quand les couches sont chargées*/
@@ -258,7 +263,10 @@ var searchbar = function(searchbardiv, map_instance, resultable_instance){
                     countLoading--; // Compteur de couches chargées
                     jQuery('#encours_'+typeObjetEtude.name).html(' <b>chargé</b>.')
                     if (countLoading == 0) {
-                        jQuery('#info_chargement').modal('hide')
+                        setTimeout(function(){
+                            jQuery('#info_chargement').modal('hide');
+                            jQuery('#info_chargement_body').html('');
+                        },500);                    
                     }
                 });
             }

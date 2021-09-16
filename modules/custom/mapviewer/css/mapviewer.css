@@ -158,8 +158,18 @@
 .add-layer-control {
     position: absolute;
     top: 6.5em;
-    right: 0.5em;
+    right: 0.55em;
     text-align: left;
+}
+#uploadbox {
+    height: 300px;
+    width: auto;
+    border: dashed;
+    border-color: lightgrey;
+    background: url(../images/drag-drop-icon.jpg);
+    background-size: 20%;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 #group-select-style-input {
@@ -184,7 +194,48 @@
     -ms-user-select: none;
     user-select: none;
     -webkit-appearance: none;
+    cursor: pointer;
 }
+
+#group-select-style-input:hover {
+    background-color: rgba(0, 60, 136, .7);
+}
+
+.upload-file-control {
+    position: absolute;
+    top: 9.5em;
+    right: 0.5em;
+    text-align: left;
+}
+
+#upload-file-button {
+    background-image: url(../images/layerupload.png);
+    background-size: 24px;
+    background-repeat: no-repeat;
+    background-position: 13px;
+    color: rgba(255, 255, 255);
+    font-size: 1.14em;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    height: 2.375em;
+    width: 2.4em;
+    line-height: 0;
+    background-color: rgba(0, 60, 136, .5);
+    border-radius: 2px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-appearance: none;
+}
+
+#upload-file-button:hover {
+    background-color: rgba(0, 60, 136, .7);
+}
+
 /* pour firfox */
 @-moz-document url-prefix() {
     #group-select-style-input {
@@ -435,7 +486,7 @@ a[id$='-tab'][id^='habitat']:focus:after {
 }
 
 #popup-info:after {
-    border-top-color:rgba(0, 60, 136, .7)
+    border-top-color:rgba(0, 60, 136, .7);
     border-width: 10px;
     left: 48px;
     margin-left: -10px;

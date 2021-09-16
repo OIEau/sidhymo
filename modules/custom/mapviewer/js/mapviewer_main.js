@@ -162,6 +162,7 @@ jQuery(document).ready(function() {
     map2.highlightControler();
     map2.addLegend();
     map2.addLayerSelection();
+    map2.addFileUploadController();
     
     // Hauteur de la map
     var taille=jQuery('.path-frontpage').height()-jQuery('#header-menu').height()-parseInt(jQuery('#header-brand').css('padding-top'))-jQuery('#header-brand').height()-1

@@ -355,7 +355,7 @@ var map = function(mapDiv, fichehandler_instance){
         var fondDeCarte = []
         map = new ol.Map({
             controls: ol.control.defaults().extend([
-                new ol.control.FullScreen(),
+                new ol.control.FullScreen({tipLabel: "Mettre en plein écran"}),
                 new ol.control.ScaleLine()
             ]),
             projection: 'EPSG:3857',
@@ -368,6 +368,10 @@ var map = function(mapDiv, fichehandler_instance){
                     layers: [wmsPlanEau, wmsCoursEau]
                 }),
                 new ol.layer.Group({
+                    title: 'Couche personalisée',
+                    layers: []
+                }),
+                new ol.layer.Group({
                     title: 'Couches hydromorphologiques',
                     layers: [/*ind_base_bio_SYRAH, ind_physique_SYRAH, ind_physique_ME, ind_base_bio_ME,*/ USRA_SYRAH, Troncons_SYRAH, ied_carhyce, roe]
                 }),
@@ -375,7 +379,6 @@ var map = function(mapDiv, fichehandler_instance){
                     title: 'Couches interactives',
                     layers: []
                 }),
-
             ],
             overlays:[
               new ol.Overlay({
@@ -423,7 +426,7 @@ var map = function(mapDiv, fichehandler_instance){
         //Efface la recherche
         jQuery('#searchbar').html("");
         // Efface la map
-        map.getLayerGroup().getLayers().item(3).getLayers().clear()
+        map.getLayerGroup().getLayers().item(4).getLayers().clear()
 
         root.territoire = territoire
 
@@ -717,10 +720,104 @@ var map = function(mapDiv, fichehandler_instance){
                 typeGeom: typeObjetEtude.typeStyle,
                 style: typeObjetEtude.style
             });
-            
         });
     }
 
+    /* Ajout de couche externe geojson en drag and drop  */
+    this.addFileUploadController = function () {
+        
+        // Créer le bouton
+        var container = document.createElement('div');
+        container.className = 'ol-unselectable ol-control upload-file-control';
+        
+        var button = document.createElement('button')
+        button.title = "Cliquez pour ajouter des données issues d'un fichier geojson";
+        button.id = "upload-file-button";
+        container.appendChild(button);
+        
+        // Ajouter à la carte
+        jQuery('.ol-overlaycontainer').prepend(container);
+
+        //  En cas de clic sur le bouton
+        jQuery(button).on('click', function (e) {
+            jQuery('#info_chargement').modal();
+            jQuery('#info_chargement_body').html('<div id="uploadbox"><p style="text-align: center">Veuillez glisser et déposer votre fichier geojson ci-dessous</p></div>');
+        });
+
+        // Creation du drag and drop (le bouton etc ci dessus ne servent à rien d'autre qu'a montrer a l'utilisateur qu'il peut drag and droper sur la carte.
+        var dd = new ol.interaction.DropFile({
+        /*
+        formatConstructors: [
+            ol.format.GPX,
+            ol.format.GeoJSON,
+            ol.format.GeoJSONX,
+            ol.format.IGC,
+            ol.format.KML,
+            ol.format.TopoJSON
+        ]
+        */
+        });
+
+        // Ajout du drag and drop à la carte 
+        map.addInteraction (dd);
+        
+        // Tableau de vecteurs chargés
+        var dropedVectorArray = Array();
+
+        // Drag and drop
+        dd.on ('loadstart', function (e) {
+            // Modal d'info de chargement en cours
+            jQuery('#info_chargement').modal();
+            jQuery('#info_chargement_body').html('<p style="text-align: center;">Votre fichier est en cours de chargement.<br><progress></progress></p>');
+            
+            // Creation du vecteur et ajout au tableau
+            dropedVectorArray[e.file.name] =  new ol.source.Vector();
+
+            // var vectorSource = new ol.source.Vector();
+            var vector = new ol.layer.Vector({
+                title: e.file.name,
+                source: dropedVectorArray[e.file.name],
+            });
+            // var newStyle = new ol.style.Style();
+            // newStyle = root.styles.blueStyle;
+            // function random_rgba() {
+            //     var o = Math.round, r = Math.random, s = 200;
+            //     return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ', 0.7)';
+            // }
+            // var color = random_rgba();
+            
+            // newStyle[0].stroke_.color_ = color
+            vector.setStyle (root.styles.blueStyle);
+            map.getLayerGroup().getLayers().item(2).getLayers().push(vector);
+        });
+
+        // En cas d'ajout de feature sur la carte par drag and drop 
+        dd.on ('addfeatures', function(event) {
+            jQuery('#info_chargement_body').html('<p style="text-align: center;">Votre fichier est en cours de chargement.<br><progress></progress></p>');
+
+            setTimeout(function(){
+                dropedVectorArray[event.file.name].addFeatures(event.features);
+        
+                // if (!jQuery("#zoomto").prop('checked')) return;
+                var vext = map.getView().getProjection().getExtent();
+                var extent = dropedVectorArray[event.file.name].getExtent();
+                if (extent[0]<vext[0]) extent[0] = vext[0];
+                if (extent[1]<vext[1]) extent[1] = vext[1];
+                if (extent[2]>vext[2]) extent[2] = vext[2];
+                if (extent[3]>vext[3]) extent[3] = vext[3];
+                map.getView().fit(extent, map.getSize());
+            },500);
+        });
+        
+        // Fin de chargement, on fait disparaitre la modal et on la vide 
+        dd.on ('loadend', function (e) {
+            setTimeout(function(){
+                jQuery('#info_chargement').modal('hide');
+                jQuery('#info_chargement_body').html('');
+            },500);
+        });
+    }
+    
     var eventCursorOnMap = function() {
         jQuery(".map").on('mousedown', function() {
           jQuery("canvas").css('cursor' , 'grabbing');

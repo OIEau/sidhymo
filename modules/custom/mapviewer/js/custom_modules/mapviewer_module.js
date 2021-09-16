@@ -86,5 +86,3 @@ export let configobjects = [{
     label: "Stations carhyce",
     style: circleStyle
 }]
-
-export let testnumber = 12
